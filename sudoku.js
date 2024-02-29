@@ -85,6 +85,25 @@ function setGame() {
     solution = numGen();
     get = JSON.parse(JSON.stringify(solution));
     board = removeValues(50, get);
+    get = JSON.parse(JSON.stringify(board));
+
+    // Difficulty and new game
+    for (let i = 0; i < 3; i++) {
+        let diff = document.createElement("div");
+        if(i == 0) {
+            diff.id = 50;
+            diff.innerText = "Easy";
+        } else if (i == 1) {
+            diff.id = 58;
+            diff.innerText = "Normal";
+        } else {
+            diff.id = "New Game";
+            diff.innerText = "New Game";
+        }
+        diff.classList.add("diff");
+        document.getElementById("difficulty").appendChild(diff);
+    }
+
     // Digits 1-9
     for (let i = 1; i<=9; i++) {
         //<div id="1" class="number">1</div>
@@ -119,11 +138,17 @@ function setGame() {
 } 
 
 function selectNumber() {
-    if (numSelected != null) {
+    if (numSelected == this) {
         numSelected.classList.remove("number-selected");
+        numSelected = null;
+        return;
+    } else {    
+        if (numSelected != null) {
+            numSelected.classList.remove("number-selected");
+        }
+        numSelected = this;
+        numSelected.classList.add("number-selected");
     }
-    numSelected = this;
-    numSelected.classList.add("number-selected");
 }
 
 function selectTile() {
