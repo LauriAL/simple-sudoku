@@ -71,22 +71,20 @@ function removeValues(dif, sol) {
     return board;
 }
 
-var numSelected = null;
-
-var errors = 0;
-
-var solution = numGen();
-var get = JSON.parse(JSON.stringify(solution));
-var board = removeValues(50, get);
-
-solution.forEach((i) => console.log(i + "\n"));
-board.forEach((i) => console.log(i + "\n"));
+var numSelected, errors, solution, get, board, difficulty;
 
 window.onload = function() {
     setGame();
 }
 
 function setGame() {
+    numSelected = null;
+
+    errors = 0;
+
+    solution = numGen();
+    get = JSON.parse(JSON.stringify(solution));
+    board = removeValues(50, get);
     // Digits 1-9
     for (let i = 1; i<=9; i++) {
         //<div id="1" class="number">1</div>
@@ -143,7 +141,7 @@ function selectTile() {
             this.innerText = numSelected.id;
         } else {
             errors += 1;
-            document.getElementById("errors").innerText = errors;
+            document.getElementById("errors").innerText = `Errors: ${errors}`;
         }
     }
 }
