@@ -9,7 +9,7 @@ function numGen() {
         num = num.replace(val, '');
     }
 
-    function solver() {
+    function filler() {
         for(let i = 0; i < 9; i++) {
             for(let j = 0; j < 9; j++) {
 
@@ -18,7 +18,7 @@ function numGen() {
 
                         if(!(rowCheck(val, i, grid) || colCheck(val, j, grid) || subgrid(val, i, j, grid))) {
                             grid[i][j] = val;
-                            if(solver()) {
+                            if(filler()) {
                                 return true;
                             }
                             grid[i][j] = ' ';
@@ -31,7 +31,7 @@ function numGen() {
         return true;
     }
 
-    solver();
+    filler();
 
     return grid;
 }
@@ -102,21 +102,14 @@ function setGame() {
 
     document.getElementById("errors").innerText = `There are ${wrong} blanks`;
     // Difficulty and new game
-    for (let i = 0; i < 3; i++) {
-        let diff = document.createElement("div");
-        if(i == 0) {
-            diff.id = 50;
-            diff.innerText = "Easy";
-        } else if (i == 1) {
-            diff.id = 58;
-            diff.innerText = "Normal";
-        } else {
-            diff.id = "New Game";
-            diff.innerText = "New Game";
-        }
-        diff.classList.add("diff");
-        document.getElementById("difficulty").appendChild(diff);
-    }
+    let diff = document.createElement("div");
+    diff.id = "solve";
+    diff.innerText = "Auto solve";
+    diff.addEventListener("click", solver);
+    diff.classList.add("diff");
+    document.getElementById("difficulty").appendChild(diff);
+
+
 
     // Digits 1-9
     for (let i = 1; i<=9; i++) {
@@ -168,7 +161,6 @@ function selectNumber() {
 function selectTile() {
     if (numSelected) {
         if (this.innerText != "") {
-            checkNumbers(numSelected.id)
             return;
         }
         
@@ -190,30 +182,42 @@ function selectTile() {
     }
 }
 
-function checkNumbers(n) {
-    if(n != num) {
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                if(board[i][j] == num) {
-                    let c = i.toString() + "-" + j.toString();
-                    if(get[i][j] == num) {
-                        document.getElementById(c).classList.add("tile-start");
-                    } else {
-                        document.getElementById(c).classList.remove("number-selected");
+function solver() {
+    this.classList.add("tile-start");
+    autoSolve();
+}
+
+function autoSolve() {
+    for(let r = 0; r < 9; r++) {
+        for(let c = 0; c < 9; c++) {
+            coords = r.toString() + "-" + c.toString();
+            if(document.getElementById(coords).innerText == "") {
+                for(let val = 1; val < 10; val++) {
+                    if(isValid(document.getElementById("board"), r, c, val)) {
+                        document.getElementById(coords).innerText == val;
+                        if(autoSolve()) {
+                            return true;
+                        } else {
+                            document.getElementById(coords).innerText == "";
+                        }
                     }
                 }
+                return true;
             }
         }
     }
+    return true;
+}
 
-    for(let i = 0; i < 9; i++) {
-        for(let j = 0; j < 9; j++) {
-            if(board[i][j].innerText == n) {
-                let c = i.toString() + "-" + j.toString();
-                document.getElementById(c).classList.add("number-selected");
-            }
+function isValid(board, row, col, val) {
+    for(let i = 1; i < 10; i++) {
+        const m = 3 * Math.floor(row/3) + math.floor(i/3);
+        const n = 3 * Math.floor(col/3) + i % 3;
+        let c = row.toString() + "-" + col.toString();
+        if(board.getElementById(row.toString() + "-" + i.toString()).innerText == val || board.getElementById(i.toString() + "-" + col.toString()).innerText == k 
+        || board.getElementById(m.toString() + "-" + n.toString()).innerText == val) {
+            return false;
         }
     }
-
-    num = n;
+    return true;
 }
