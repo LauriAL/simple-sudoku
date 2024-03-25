@@ -191,18 +191,18 @@ function autoSolve() {
     for(let r = 0; r < 9; r++) {
         for(let c = 0; c < 9; c++) {
             coords = r.toString() + "-" + c.toString();
-            if(document.getElementById(coords).innerText == "") {
+            if(document.getElementsById(coords).innerText == "") {
                 for(let val = 1; val < 10; val++) {
                     if(isValid(document.getElementById("board"), r, c, val)) {
-                        document.getElementById(coords).innerText == val;
+                        document.getElementById(coords).innerText = val;
                         if(autoSolve()) {
                             return true;
                         } else {
-                            document.getElementById(coords).innerText == "";
+                            document.getElementById(coords).innerText = "";
                         }
                     }
                 }
-                return true;
+                return false;
             }
         }
     }
