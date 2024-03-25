@@ -68,10 +68,23 @@ function removeValues(dif, sol) {
         let col = Math.floor(Math.random() * 9);
         board[row][col] = ' ';
     }
+
+    wrong = 0;
+
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (board[r][c] == ' ') {
+                wrong += 1;
+            }
+        }
+    }
+
     return board;
 }
 
-var numSelected, errors, solution, get, board, difficulty;
+var numSelected, errors, solution, get, board, difficulty, wrong, num;
+
+let coords, r, c;
 
 window.onload = function() {
     setGame();
@@ -87,6 +100,7 @@ function setGame() {
     board = removeValues(50, get);
     get = JSON.parse(JSON.stringify(board));
 
+    document.getElementById("errors").innerText = `There are ${wrong} blanks`;
     // Difficulty and new game
     for (let i = 0; i < 3; i++) {
         let diff = document.createElement("div");
@@ -119,7 +133,7 @@ function setGame() {
     for (let r = 0; r<9; r++) {
         for (let c = 0; c<9; c++) {
             let tile = document.createElement("div");
-            tile.id = r.toString() + " " + c.toString();
+            tile.id = r.toString() + "-" + c.toString();
             if (board[r][c] != " ") {
                 tile.innerText = board[r][c];
                 tile.classList.add("tile-start");
@@ -154,19 +168,52 @@ function selectNumber() {
 function selectTile() {
     if (numSelected) {
         if (this.innerText != "") {
+            checkNumbers(numSelected.id)
             return;
         }
         
         // "0-0", "0-1", ... "8-8"
-        let coords = this.id.split(" "); //["0", "0"]
-        let r = parseInt(coords[0]);
-        let c = parseInt(coords[1]);
+        coords = this.id.split("-"); //["0", "0"]
+        r = parseInt(coords[0]);
+        c = parseInt(coords[1]);
 
         if (solution[r][c] == numSelected.id) {
             this.innerText = numSelected.id;
+            wrong = wrong - 1;
+            if (wrong === 0) {
+                document.getElementById("errors").innerText = `You win with ${errors} errors!`;
+            }
         } else {
             errors += 1;
             document.getElementById("errors").innerText = `Errors: ${errors}`;
         }
     }
+}
+
+function checkNumbers(n) {
+    if(n != num) {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if(board[i][j] == num) {
+                    let c = i.toString() + "-" + j.toString();
+                    if(get[i][j] == num) {
+                        document.getElementById(c).classList.add("tile-start");
+                    } else {
+                        document.getElementById(c).classList.remove("number-selected");
+                    }
+                }
+            }
+        }
+    }
+
+    for(let i = 0; i < 9; i++) {
+        for(let j = 0; j < 9; j++) {
+            if(board[i][j].innerText == n) {
+                let c = i.toString() + "-" + j.toString();
+                document.getElementById(c).classList.add("number-selected");
+            }
+        }
+    }
+
+    num = n;
 }
